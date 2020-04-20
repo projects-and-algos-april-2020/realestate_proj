@@ -1,4 +1,5 @@
 from flask import Flask, redirect, render_template, session, request, flash
+import re
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
@@ -12,6 +13,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
+EMAIL_Check = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
+pass_check = re.compile(r'^[a-zA-Z0-9.+_-]+$')
 
 
 class Owner(db.Model):
@@ -20,6 +23,7 @@ class Owner(db.Model):
     first_name = db.Column(db.String(45))
     last_name = db.Column(db.String(45))
     email = db.Column(db.String(45))
+    password = db.Column(db.String(45))
     all_properties = db.relationship('Property', back_populates = 'owners_property', cascade = 'all, delete, delete-orphan')
     created_at = db.Column(db.DateTime, server_default = func.now())
     updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
@@ -32,6 +36,8 @@ class Property(db.Model):
     zip_code = db.Column(db.Integer)
     units = db.Column(db.Integer)
     income = db.Column(db.Integer)
+    offer = db.Column(db.Integer)
+    expenses = db.Column(db.Integer)
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.id',ondelete='cascade'), nullable=False)
     owners_property = db.relationship('Owner', foreign_keys = [owner_id])
     created_at = db.Column(db.DateTime, server_default = func.now())
@@ -47,71 +53,108 @@ def signIncheck():
         flash('Please enter a valid email')
     if len(request.form['password'])<5:
         flash('Please enter a valid password')
-    this_owner = Owner.query.get(request.form['email'])  # check if email exists
+    this_owner = Owner.query.filter_by(email = request.form['email']).first() 
+    print(this_owner.id)
+    print(this_owner)
+    print(this_owner.password)
     if this_owner:   
-        if bcrypt.check_password_hash(this_owner['password'], request.form['password']):
-            session['id'] = this_owner['id']
-            session['first_name'] = this_owner['first_name']
+        if bcrypt.check_password_hash(this_owner.password, request.form['password']):
+            session['id'] = this_owner.id
+            session['first_name'] = this_owner.first_name
             print(session['first_name'])
             return redirect('/offerpage')
     else:
         flash('Please register!')
     return redirect('/')
 
-@app.route('/register')
-def register():
-    new_owner = Owner(first_name = request.form['first_name'], last_name=request.form['last_name'], email=request.form['email'], password=request.form['password'])
-    db.session.add(new_owner)
-    db.session.commit()
-    flash('Thank you for registering, please log in!')
-    return redirect('/')
+@app.route('/addowner')
+def add_owner():
+    return render_template('registration.html')
+    
 
+
+@app.route('/register', methods = ['POST'])
+def register():
+    valid = True
+    if len(request.form['first_name']) <2:
+        valid = False
+        flash('Please enter a first name')
+    if len(request.form['last_name']) <2:
+        valid = False
+        flash('Please enter a last name')
+    if len(request.form['email']) <5:
+        valid = False
+        flash('Please enter a first name')
+    elif not EMAIL_Check.match(request.form['email']):
+        valid = False
+        flash('Please enter a valid email')
+        
+    if len(request.form['password']) < 5:
+        valid= False
+        flash('Please enter a password with atleast 8 characters')
+        
+    elif not pass_check.match(request.form['password']):
+        valid =False 
+        flash ('Please enter a password with correct characters')
+       
+    if request.form['cpassword'] != request.form['password']:
+        valid=False
+        flash('Please match passwords')
+       
+
+    User_check = Owner.query.filter_by(email = request.form['email']).first() 
+    if User_check: 
+        valid = False
+        flash('Email already exists please use a different email')
+        
+    if valid ==True:
+        pw_hash = bcrypt.generate_password_hash(request.form['password'])
+        new_owner = Owner(first_name = request.form['first_name'], last_name=request.form['last_name'], email=request.form['email'], password=pw_hash)
+        db.session.add(new_owner)
+        db.session.commit()
+        flash('Thank you for registering, please log in!')
+        return redirect('/')
+    return redirect('/addowner')
+    
 @app.route('/offerpage')
 def offer_page():
     if 'id' not in session:
         flash('Please Login!')
         return redirect('/')
+    else:
+        offers_for_user = Property.query.filter_by(owner_id=session['id']).all()
+    return render_template('offerpage.html',offers = offers_for_user)
+    
+@app.route('/offercalc', methods = ['POST'])
+def offercalc():
+    valid = True
+    if len(request.form['address'])<5:
+        valid = False
+        flash('Please enter a valid address')
+    if len(request.form['city'])<2:
+        valid = False
+        flash('Please enter a city')
+    if len(request.form['zip_code'])<5:
+        valid = False
+        flash('Please enter a zip code')
+    if len(request.form['units'])<1:
+        valid = False
+        flash('Please enter no. of units')
+    if valid == True:
+        offer_price = int(request.form['income']) * 12
+        print(offer_price)
 
-# @app.route('/updatepassword')
+        new_property = Property(address = str(request.form['address']), city = str(request.form['city']), zip_code = request.form['zip_code'], units = request.form['units'], income = request.form['income'], offer = offer_price, owner_id = session['id'] ) 
+        db.session.add(new_property)
+        db.session.commit()
+        return redirect('/offerpage')
+    return redirect('/offerpage')
 
-# @app.route('/addbook', methods=['POST'])
-# def addbook():
-#     new_book = Books(title = request.form['title'], description=request.form['description'])
-#     db.session.add(new_book)
-#     db.session.commit()
-#     return redirect('/')
-
-
-# @app.route('/books/<books_id>')
-# def book_id(books_id):
-#     this_book = Books.query.get(int(books_id))
-#     potential_authors = Authors.query.all()
-#     return render_template('bookid.html',this_book = this_book,possible_authors = potential_authors)
-
-# @app.route('/authors')
-# def authors_page():
-#     all_authors = Authors.query.all()
-#     return render_template('authors.html',Authors = all_authors)
-
-# @app.route('/addauthor', methods=['POST'])
-# def addauthor():
-#     new_author = Authors(first_name = request.form['first_name'], last_name = request.form['last_name'],notes = request.form['notes'])
-#     db.session.add(new_author)
-#     db.session.commit()
-#     return redirect('/authors')
-
-# @app.route('/authors/<authors_id>')
-# def author_id(authors_id):
-#     this_author = Authors.query.get(int(authors_id))
-#     return render_template('authorid.html',this_author = this_author)
-
-# @app.route('/authors_books', methods=['POST'])
-# def authors_books():
-#     this_book = Books.query.get(request.form['book_id'])
-#     this_author = Authors.query.get(request.form['author_id']) 
-#     this_author.books_this_author_wrote.append(this_book)
-#     db.session.commit()
-#     return redirect('/')
+    
+@app.route('/logout')
+def logout():
+    session.pop('id')
+    return redirect('/')
 
 if __name__=="__main__":
     app.run(debug=True)

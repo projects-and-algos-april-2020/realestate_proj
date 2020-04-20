@@ -8,10 +8,48 @@
 </head>
 <body>
     <div class="container" >
-        <div role="navigation" class="navbar navbar-light bg-light">
-                <h2 class="navbar-brand mb-0 h1">Apartment</h2>
-                <a href="/faq">FAQ |</a>
-                <a href="/about">About |</a>
+        <div role="navigation" class="navbar navbar-dark bg-dark">
+                <h2 class="navbar-brand mb-0 h1">Apartment Buyers</h2>
+                <div class="nav-link">
+                    <a href="/" >Homepage |</a>
+                    <a href="/faq" >FAQ |</a>
+                    <a href="/about" >About </a>
+                  </div>
+        </div>
+        <div class="main">
+            <form action="/register"  method="POST">
+
+                <label for="first_name">First Name: </label>
+                <input type="text" name='first_name' class="form-control" id="first_name">
+
+                <label for="last_name">Last Name: </label>
+                <input type="text" name='last_name' class="form-control" id="last_name">
+
+
+                <label for="email">Email address</label>
+                <input type="email"  name='email' class="form-control" id="email" aria-describedby="emailHelp">
+                
+              
+                <label for="password">Password</label>
+                <input type="password" name='password' class="form-control" id="password">
+
+                <label for="cpassword"> Confirm Password</label>
+                <input type="password" name='cpassword' class="form-control" id="cpassword">
+
+                <button type="submit" class="btn btn-primary">Login</button>
+
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <ul class=flashes>
+                        {% for message in messages %}
+                        <li>{{ message }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+            
+            </form>            
+
         </div>
 </body>
 </html>

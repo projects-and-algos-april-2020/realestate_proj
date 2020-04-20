@@ -3,6 +3,37 @@ text-align: center !important;
 display: inline-block;
 }
 
+.building-info{
+  width: 35%;
+  display: inline-block;
+  margin-left: 10%;
+  margin-top: 10%;
+  background-color: lightgray;
+  padding: 1%;
+  border-radius: 1%;
+}
+
+
+.offer{
+  width: 40%;
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 10%;
+  margin-top: 10%;
+  background-color: lightgray;
+  padding: 1%;
+  border-radius: 1%;
+}
+
+
+.main{
+  width: 35%;
+  margin-left: 30%;
+  margin-top: 15%;
+  background-color: grey;
+  padding: 1%;
+  border-radius: 1%;
+}
 .btn-primary {
   color: #fff;
   background-color: #007bff;
@@ -592,12 +623,15 @@ overflow-y: scroll;
 }
 
 .container {
-width: 100%;
-padding-right: 15px;
-padding-left: 15px;
+width: auto;
+height: 960px;
+padding-right: 10px;
+padding-left: 10px;
 margin-right: auto;
 margin-left: auto;
-background-color: lightblue;
+/* background-color: lightgray; */
+/* background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/External_view_of_the_Herman_W._Hellman_building_on_Spring_Street_and_4th_Street%2C_Los_Angeles%2C_1908_%28CHS-5194%29.jpg/960px-External_view_of_the_Herman_W._Hellman_building_on_Spring_Street_and_4th_Street%2C_Los_Angeles%2C_1908_%28CHS-5194%29.jpg); */
+background-image: url(https://c4.wallpaperflare.com/wallpaper/419/606/420/japan-street-cityscape-clouds-wallpaper-preview.jpg);
 }
 
 @media (min-width: 576px) {
@@ -1790,6 +1824,7 @@ background-color: rgba(255, 255, 255, 0.05);
 background-color: rgba(255, 255, 255, 0.075);
 }
 
+
 @media (max-width: 575.98px) {
 .table-responsive-sm {
 display: block;
@@ -2021,8 +2056,12 @@ height: calc(2.875rem + 2px);
 .form-group {
 margin-bottom: 1rem;
 width: 30%;
-margin-left: 25%;
+margin-left: 35%;
 margin-top: 20%;
+background-color: grey;
+border-radius: 2%;
+padding:1%
+;
 }
 
 .form-text {
@@ -3872,8 +3911,9 @@ list-style: none;
 }
 
 .nav-link {
-display: block;
+display: inline-block;
 padding: 0.5rem 1rem;
+margin-left: 60%
 }
 
 .nav-link:hover, .nav-link:focus {
