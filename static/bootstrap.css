@@ -3913,7 +3913,7 @@ list-style: none;
 .nav-link {
 display: inline-block;
 padding: 0.5rem 1rem;
-margin-left: 60%
+margin-left: 50%
 }
 
 .nav-link:hover, .nav-link:focus {

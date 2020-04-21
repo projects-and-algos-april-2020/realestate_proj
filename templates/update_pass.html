@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.css') }}">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container" >
+       
+        <div role="navigation" class="navbar navbar-dark bg-dark">
+                <h2 class="navbar-brand mb-0 h1">Apartment Buyers</h2>
+                <p><a href="/">Homepage</a></p>
+                <!-- <img src="http://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"> add http:// before the website name -->
+
+        </div>
+    
+        <div class="sign-in">
+            <div class="form-group">
+            <form action="/updatecheck" method="POST">
+               
+                
+                  <label for="email">Email address</label>
+                  <input type="email"  name='email' class="form-control" id="email" aria-describedby="emailHelp">
+                  
+
+                  <label for="password">New Password</label>
+                  <input type="password" name='password' class="form-control" id="password">
+
+                  <label for="cpassword">Confirm Password</label>
+                  <input type="password" name='cpassword' class="form-control" id="cpassword">
+
+                  <button type="submit" class="btn btn-primary">Update</button>
+
+                </form>
+                  {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <ul class=flashes>
+                        {% for message in messages %}
+                        <li>{{ message }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}         
+            </div>  
+        </div>
+    </div>
+    
+</body>
+</html>

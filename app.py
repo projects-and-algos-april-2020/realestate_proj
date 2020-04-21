@@ -70,8 +70,6 @@ def signIncheck():
 @app.route('/addowner')
 def add_owner():
     return render_template('registration.html')
-    
-
 
 @app.route('/register', methods = ['POST'])
 def register():
@@ -115,6 +113,47 @@ def register():
         flash('Thank you for registering, please log in!')
         return redirect('/')
     return redirect('/addowner')
+
+@app.route('/updatepassword')
+def update_pass():
+    return render_template('update_pass.html')
+
+@app.route('/updatecheck', methods = ['POST'])
+def update_pass_db():
+    valid = True
+    if not EMAIL_Check.match(request.form['email']):
+        valid = False
+        flash('Please enter a valid email')
+
+    User_check = Owner.query.filter_by(email = request.form['email']).first()
+
+    if not User_check: 
+        valid = False
+        flash('Email doesn"t exist please register')
+
+    if len(request.form['password']) < 5:
+        valid= False
+        flash('Please enter a password with atleast 8 characters')
+    
+    elif not pass_check.match(request.form['password']):
+        valid =False 
+        flash ('Please enter a password with correct characters')
+       
+    if request.form['cpassword'] != request.form['password']:
+        valid=False
+        flash('Please match passwords')
+
+    else:
+        update_password = Owner.query.filter_by(email = request.form['email']).first()
+        print(update_password)
+        print(update_password.password)
+        pw_hash = bcrypt.generate_password_hash(request.form['password'])
+        update_password.password = pw_hash
+        db.session.commit()
+        flash('Thanks for updating your password, please log in!')
+        return redirect('/')
+    return redirect('/updatepassword')
+
     
 @app.route('/offerpage')
 def offer_page():
@@ -140,11 +179,18 @@ def offercalc():
     if len(request.form['units'])<1:
         valid = False
         flash('Please enter no. of units')
+    if len(request.form['income'])<3:
+        valid = False
+        flash('Please enter income')
+    if len(request.form['expenses'])<3:
+        valid = False
+        flash('Please enter expenses')
+
     if valid == True:
         offer_price = int(request.form['income']) * 12
         print(offer_price)
 
-        new_property = Property(address = str(request.form['address']), city = str(request.form['city']), zip_code = request.form['zip_code'], units = request.form['units'], income = request.form['income'], offer = offer_price, owner_id = session['id'] ) 
+        new_property = Property(address = str(request.form['address']), city = str(request.form['city']), zip_code = request.form['zip_code'], units = request.form['units'], income = request.form['income'], expenses = request.form['expenses'], offer = offer_price, owner_id = session['id'] ) 
         db.session.add(new_property)
         db.session.commit()
         return redirect('/offerpage')
