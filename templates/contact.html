@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.css') }}">
+    <title>Document</title>
+    <style>
+        #map {
+          width: 100%;
+          height: 400px;
+          background-color: grey;
+        }
+    </style>
+</head>
+<body>
+        <div class="container" >
+            <div role="navigation" class="navbar navbar-dark bg-dark">
+                    <h2 class="navbar-text">Apartment Buyers</h2>
+                  <div class="nav-link">
+                    <a href="/offerpage">Offerpage |</a>
+                    <a href="/logout" >Logout |</a>
+                    <a href="/faq" >FAQ |</a>
+                    <a href="/about" >About </a>
+                  </div>
+            </div>
+       
+        <div class="offer">
+            <h3>Hello, {{session.first_name}}! Your offers are below:</h3>
+
+           
+            <table class="table table-striped table-dark">
+                
+                <thead>
+                  <!-- <tr>
+                    <th scope="col">Address: </th>
+                    <th scope="col">Offer Price: </th>
+                  </tr>
+                </thead> -->
+
+                <tbody>
+                  <tr>
+                    <td>Property Address: </td>
+                    <td>{{ this_property.address }}, {{this_property.city}} </td>
+                  </tr>
+                  <tr>
+                    <td>Units: </td>
+                    <td>{{this_property.units }} </td>
+                  </tr>
+                  <tr>
+                    <td>Income: </td>
+                    <td>${{this_property.income }} </td>
+                  </tr>
+                  <tr>
+                    <td>Expenses: </td>
+                    <td>${{ this_property.expenses }} </td>
+                  </tr>
+                  <tr>
+                    <td>Offer price: </td>
+                    <td>${{ this_property.offer }} </td>
+                  </tr>
+                </tbody>
+            
+              </table>
+              <div id="map"></div>
+
+              
+        </div>
+        <div class="comment">
+            <form action="#">
+                <input type="textbox" cols='50' rows = '5' name='owner_comment' placeholder="Contact us about your offers">
+                <button type="submit">Post!</button>
+            </form>
+        </div>
+            
+        <script>
+            // Initialize and add the map
+            function initMap() {
+              // The location of Uluru
+              var property = {lat: -25.344, lng: 131.036};
+              // The map, centered at Uluru
+              var map = new google.maps.Map(
+                  document.getElementById('map'), {zoom: 4, center: property});
+              // The marker, positioned at Uluru
+              var marker = new google.maps.Marker({position: uluru, map: map});
+            }
+                </script>
+                <script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAa62NeSOSaPHmPNMWz7B08mTdlMSW9yzY&callback=initMap">
+                </script> 
+
+    </div>
+</body>
+</html>

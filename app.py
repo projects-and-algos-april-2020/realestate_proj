@@ -17,12 +17,31 @@ EMAIL_Check = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 pass_check = re.compile(r'^[a-zA-Z0-9.+_-]+$')
 
 
+comments_table = db.Table('commments',
+              db.Column(db.String(200)),
+              db.Column('property_id', db.Integer, db.ForeignKey('properties.id', ondelete='cascade'), primary_key=True), 
+              db.Column('admin_id', db.Integer, db.ForeignKey('admin.id', ondelete='cascade'), primary_key=True))
+
+# class Admin(db.Model):
+#     __tablename__='admin'
+#     id = db.Column(db.Integer,primary_key=True)
+#     email = db.Column(db.String(45))
+#     password = db.Column(db.String(45))
+#     admin_all_properties = db.relationship('Property', back_populates = 'admins_property_association', cascade = 'all, delete, delete-orphan')
+#     admin_property_comment = db.relationship('Property', secondary=comments_table, passive_deletes=True)
+#     created_at = db.Column(db.DateTime, server_default = func.now())
+#     updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
+
+
+
+
 class Owner(db.Model):
     __tablename__ = 'owners'
     id = db.Column(db.Integer, primary_key = True)
     first_name = db.Column(db.String(45))
     last_name = db.Column(db.String(45))
     email = db.Column(db.String(45))
+    # admin = db.Column(db.Boolean)
     password = db.Column(db.String(45))
     all_properties = db.relationship('Property', back_populates = 'owners_property', cascade = 'all, delete, delete-orphan')
     created_at = db.Column(db.DateTime, server_default = func.now())
@@ -38,8 +57,12 @@ class Property(db.Model):
     income = db.Column(db.Integer)
     offer = db.Column(db.Integer)
     expenses = db.Column(db.Integer)
+    interest =db.Column(db.boolean)
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.id',ondelete='cascade'), nullable=False)
     owners_property = db.relationship('Owner', foreign_keys = [owner_id])
+    # admin_id = db.Column(db.Integer, db.ForeignKey('admin.id',ondelete='cascade'), nullable=False)
+    # admins_property_association = db.relationship('Admin', foreign_keys = [admin_id])
+    # ower_comment_property = db.relationship('Comment', secondary=comments_table, passive_deletes=True)
     created_at = db.Column(db.DateTime, server_default = func.now())
     updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
 
@@ -53,6 +76,7 @@ def signIncheck():
         flash('Please enter a valid email')
     if len(request.form['password'])<5:
         flash('Please enter a valid password')
+
     this_owner = Owner.query.filter_by(email = request.form['email']).first() 
     print(this_owner.id)
     print(this_owner)
@@ -196,11 +220,23 @@ def offercalc():
         return redirect('/offerpage')
     return redirect('/offerpage')
 
+
+@app.route('/contact/<id>')
+def contact(id):
+    print('got here')
+    this_property = Property.query.get(id)
+    print(this_property.address)
+    return render_template("contact.html", this_property = this_property)
+
     
 @app.route('/logout')
 def logout():
     session.pop('id')
     return redirect('/')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 if __name__=="__main__":
     app.run(debug=True)

@@ -119,9 +119,9 @@
                 {% for offer in offers %}   
                 <tbody>
                   <tr>
-                    <td>{{ offer.address }} </td>
+                    <td><a href="/contact/{{offer.id}}">{{ offer.address }}</a> </td>
                     <td>$ {{ offer.offer }}</td>
-                    <td><a href="/" >Contact us </a></td>
+                    <td><a href="/contact/{{offer.id}}" >Contact us </a></td>
                   </tr>
                 </tbody>
                 {% endfor %}

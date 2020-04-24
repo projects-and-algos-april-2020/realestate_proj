@@ -13,7 +13,14 @@ display: inline-block;
   border-radius: 1%;
 }
 
-
+.comment{
+  display: inline-block;
+  width: 40%;
+  height: 30%;
+  margin-top: 10%;
+  vertical-align: top;
+  background-color: lightblue;
+}
 .offer{
   width: 40%;
   display: inline-block;
@@ -25,6 +32,15 @@ display: inline-block;
   border-radius: 1%;
 }
 
+.about{
+  width: 75%;
+  margin-left: 10%;
+  margin-top: 7%;
+  background-color: grey;
+  padding: 1%;
+  border-radius: 1%;
+  border-color: black;
+}
 
 .main{
   width: 35%;
