@@ -67,26 +67,38 @@
               
         </div>
         <div class="comment">
-            <form action="#">
+            <form action="/commentadd/{{this_property.id}}" method="POST">
                 <input type="textbox" cols='50' rows = '5' name='owner_comment' placeholder="Contact us about your offers">
                 <button type="submit">Post!</button>
             </form>
+            <div class="comments">
+                {% for comment in comments %}
+
+                <p>{{comment.property_comments}},  {{comment.comments}}</p>
+                
+                {% endfor %}
+
+            </div>
         </div>
+       
             
         <script>
+          
             // Initialize and add the map
             function initMap() {
               // The location of Uluru
+
               var property = {lat: -25.344, lng: 131.036};
               // The map, centered at Uluru
               var map = new google.maps.Map(
                   document.getElementById('map'), {zoom: 4, center: property});
               // The marker, positioned at Uluru
-              var marker = new google.maps.Marker({position: uluru, map: map});
+              var marker = new google.maps.Marker({position: property, map: map});
             }
                 </script>
                 <script async defer
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAa62NeSOSaPHmPNMWz7B08mTdlMSW9yzY&callback=initMap">
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCflXWHpLx4rriSS-1KmHgabloxJYHRPqg">
+                // https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=YOUR_API_KEY
                 </script> 
 
     </div>

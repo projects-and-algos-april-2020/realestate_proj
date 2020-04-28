@@ -1,5 +1,7 @@
 from flask import Flask, redirect, render_template, session, request, flash
 import re
+import googlemaps
+from datetime import datetime
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
@@ -15,22 +17,13 @@ migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 EMAIL_Check = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 pass_check = re.compile(r'^[a-zA-Z0-9.+_-]+$')
+gmaps = googlemaps.Client(key='AIzaSyCflXWHpLx4rriSS-1KmHgabloxJYHRPqg')
 
 
-comments_table = db.Table('commments',
-              db.Column(db.String(200)),
-              db.Column('property_id', db.Integer, db.ForeignKey('properties.id', ondelete='cascade'), primary_key=True), 
-              db.Column('admin_id', db.Integer, db.ForeignKey('admin.id', ondelete='cascade'), primary_key=True))
-
-# class Admin(db.Model):
-#     __tablename__='admin'
-#     id = db.Column(db.Integer,primary_key=True)
-#     email = db.Column(db.String(45))
-#     password = db.Column(db.String(45))
-#     admin_all_properties = db.relationship('Property', back_populates = 'admins_property_association', cascade = 'all, delete, delete-orphan')
-#     admin_property_comment = db.relationship('Property', secondary=comments_table, passive_deletes=True)
-#     created_at = db.Column(db.DateTime, server_default = func.now())
-#     updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
+# comments_table = db.Table('comments',
+#               db.Column('comment_id', db.Integer, db.ForeignKey('comments.id', ondelete='cascade'), primary_key=True),
+#               db.Column('user_id', db.Integer, db.ForeignKey('owners.id', ondelete='cascade'), primary_key=True), 
+#               db.Column('property_id', db.Integer, db.ForeignKey('properties.id', ondelete='cascade'), primary_key=True))
 
 
 
@@ -41,9 +34,10 @@ class Owner(db.Model):
     first_name = db.Column(db.String(45))
     last_name = db.Column(db.String(45))
     email = db.Column(db.String(45))
-    # admin = db.Column(db.Boolean)
+    admin = db.Column(db.Boolean())
     password = db.Column(db.String(45))
     all_properties = db.relationship('Property', back_populates = 'owners_property', cascade = 'all, delete, delete-orphan')
+    all_comments_by_this_owner = db.relationship('Comment', back_populates='owner_comments', cascade = 'all, delete, delete-orphan')
     created_at = db.Column(db.DateTime, server_default = func.now())
     updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
 
@@ -57,12 +51,21 @@ class Property(db.Model):
     income = db.Column(db.Integer)
     offer = db.Column(db.Integer)
     expenses = db.Column(db.Integer)
-    interest =db.Column(db.boolean)
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.id',ondelete='cascade'), nullable=False)
     owners_property = db.relationship('Owner', foreign_keys = [owner_id])
-    # admin_id = db.Column(db.Integer, db.ForeignKey('admin.id',ondelete='cascade'), nullable=False)
-    # admins_property_association = db.relationship('Admin', foreign_keys = [admin_id])
-    # ower_comment_property = db.relationship('Comment', secondary=comments_table, passive_deletes=True)
+    all_comments_for_this_property = db.relationship('Comment', back_populates='property_comments', cascade = 'all, delete, delete-orphan')
+    created_at = db.Column(db.DateTime, server_default = func.now())
+    updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
+
+
+class Comment(db.Model):
+    __tablename__='comments'
+    id = db.Column(db.Integer, primary_key=True)
+    comments = db.Column(db.String(255))
+    property_id = db.Column(db.Integer, db.ForeignKey('properties.id',ondelete='cascade'), nullable=False)
+    property_comments = db.relationship('Property', foreign_keys = [property_id])
+    owner_id =  db.Column(db.Integer, db.ForeignKey('owners.id',ondelete='cascade'), nullable=False)
+    owner_comments = db.relationship('Owner', foreign_keys = [owner_id])
     created_at = db.Column(db.DateTime, server_default = func.now())
     updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
 
@@ -81,7 +84,13 @@ def signIncheck():
     print(this_owner.id)
     print(this_owner)
     print(this_owner.password)
-    if this_owner:   
+    print(type(this_owner.admin))
+    if this_owner.admin == True:
+        if bcrypt.check_password_hash(this_owner.password, request.form['password']):
+            session['id]'] = this_owner.id
+            session['first_name'] = this_owner.first_name
+            return redirect ('/adminpage')
+    if not this_owner.admin:
         if bcrypt.check_password_hash(this_owner.password, request.form['password']):
             session['id'] = this_owner.id
             session['first_name'] = this_owner.first_name
@@ -90,6 +99,13 @@ def signIncheck():
     else:
         flash('Please register!')
     return redirect('/')
+
+@app.route('/adminpage')
+def adminpage():
+
+    all_offers = Property.query.order_by(Property.address).all()
+
+    return render_template('adminpage.html',all_offers=all_offers)
 
 @app.route('/addowner')
 def add_owner():
@@ -122,7 +138,14 @@ def register():
     if request.form['cpassword'] != request.form['password']:
         valid=False
         flash('Please match passwords')
-       
+
+    # if request.form['email'] == 'tymac@macreiproperties.com':
+    #     pw_hash = bcrypt.generate_password_hash(request.form['password'])
+    #     new_admin = Owner(first_name = request.form['first_name'], last_name=request.form['last_name'], email=request.form['email'], password=pw_hash, admin = True)
+    #     db.session.add(new_admin)
+    #     db.session.commit()
+    #     flash('Thank you for registering as an admin, please log in!')
+    #     return redirect('/')
 
     User_check = Owner.query.filter_by(email = request.form['email']).first() 
     if User_check: 
@@ -131,7 +154,7 @@ def register():
         
     if valid ==True:
         pw_hash = bcrypt.generate_password_hash(request.form['password'])
-        new_owner = Owner(first_name = request.form['first_name'], last_name=request.form['last_name'], email=request.form['email'], password=pw_hash)
+        new_owner = Owner(first_name = request.form['first_name'], last_name=request.form['last_name'], email=request.form['email'], password=pw_hash, admin = False)
         db.session.add(new_owner)
         db.session.commit()
         flash('Thank you for registering, please log in!')
@@ -166,6 +189,15 @@ def update_pass_db():
     if request.form['cpassword'] != request.form['password']:
         valid=False
         flash('Please match passwords')
+
+    if request.form['email'] == 'tymac@macreiproperties.com':
+        update_admin = Owner.query.filter_by(email = request.form['email']).first()
+        pw_hash = bcrypt.generate_password_hash(request.form['password'])
+        update_admin.password = pw_hash
+        update_admin.admin = True
+        db.session.commit()
+        flash('Thanks for updating your admin password, please log in')
+        return redirect('/')
 
     else:
         update_password = Owner.query.filter_by(email = request.form['email']).first()
@@ -225,10 +257,22 @@ def offercalc():
 def contact(id):
     print('got here')
     this_property = Property.query.get(id)
+    # state = 'CA'
     print(this_property.address)
-    return render_template("contact.html", this_property = this_property)
+    # geocode_result = gmaps.geocode(this_property.address, this_property.city, state)
+    this_property_comments = Comment.query.filter_by(property_id='id').all()
+    return render_template("contact.html", this_property = this_property , comments = this_property_comments )
 
-    
+@app.route('/commentadd/<id>', methods=['POST'])
+def commentsadd(id):
+    this_property = Property.query.get(id)
+    print(this_property.id)
+    new_comment = Comment(comments = request.form['owner_comment'], property_id = this_property.id )
+    db.session.add(new_comment)
+    db.session.commit()
+    this_property_comments = Comment.query.filter_by(property_id='id').all()
+    return render_template('contact.html',comments = this_property_comments, this_property = this_property)
+ 
 @app.route('/logout')
 def logout():
     session.pop('id')

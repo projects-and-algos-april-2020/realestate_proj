@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.css') }}">
+    <title>Document</title>
+</head>
+<body>
+        <div class="container" >
+            <div role="navigation" class="navbar navbar-dark bg-dark">
+                    <h2 class="navbar-text">Apartment Buyers</h2>
+                  <div class="nav-link">
+                    <a href="/logout" >Logout |</a>
+                    <a href="/faq" >FAQ |</a>
+                    <a href="/about" >About </a>
+                  </div>
+            </div>
+      
+        <div class="offer">
+            <h3>Hello, {{session.first_name}}! See properties below: </h3>
+
+
+
+           <table class="table table-striped table-dark">
+                
+            <thead>
+              <tr>
+                <th scope="col">Address: </th>
+                <th scope="col">Offer Price: </th>
+              </tr>
+            </thead>
+            {% for offer in all_offers %}   
+            <tbody>
+              <tr>
+                <td><a href="/contact/{{offer.id}}">{{ offer.address }}</a> </td>
+                <td>$ {{ offer.offer }}</td>
+                <td><a href="/contact/{{offer.id}}" >Contact us </a></td>
+              </tr>
+            </tbody>
+            {% endfor %}
+          </table>
+
+           
+            <!-- <table class="table table-striped table-dark">
+                
+                <thead>
+                  <tr>
+                    <th scope="col">Address: </th>
+                    <th scope="col">Offer Price: </th>
+                  </tr>
+                </thead>
+                {% for offer in offers %}   
+                <tbody>
+                  <tr>
+                    <td><a href="/contact/{{offer.id}}">{{ offer.address }}</a> </td>
+                    <td>$ {{ offer.offer }}</td>
+                    <td><a href="/contact/{{offer.id}}" >Contact us </a></td>
+                  </tr>
+                </tbody>
+                {% endfor %}
+              </table> -->
+            
+        </div>
+        
+
+    </div>
+</body>
+</html>
