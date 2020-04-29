@@ -63,6 +63,7 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     comments = db.Column(db.String(255))
     property_id = db.Column(db.Integer, db.ForeignKey('properties.id',ondelete='cascade'), nullable=False)
+    # fix naming for property_comments
     property_comments = db.relationship('Property', foreign_keys = [property_id])
     owner_id =  db.Column(db.Integer, db.ForeignKey('owners.id',ondelete='cascade'), nullable=False)
     owner_comments = db.relationship('Owner', foreign_keys = [owner_id])
@@ -139,18 +140,18 @@ def register():
         valid=False
         flash('Please match passwords')
 
-    # if request.form['email'] == 'tymac@macreiproperties.com':
-    #     pw_hash = bcrypt.generate_password_hash(request.form['password'])
-    #     new_admin = Owner(first_name = request.form['first_name'], last_name=request.form['last_name'], email=request.form['email'], password=pw_hash, admin = True)
-    #     db.session.add(new_admin)
-    #     db.session.commit()
-    #     flash('Thank you for registering as an admin, please log in!')
-    #     return redirect('/')
-
     User_check = Owner.query.filter_by(email = request.form['email']).first() 
     if User_check: 
         valid = False
         flash('Email already exists please use a different email')
+
+    if request.form['email'] == 'tymac@macreiproperties.com':
+        pw_hash = bcrypt.generate_password_hash(request.form['password'])
+        new_admin = Owner(first_name = request.form['first_name'], last_name=request.form['last_name'], email=request.form['email'], password=pw_hash, admin = True)
+        db.session.add(new_admin)
+        db.session.commit()
+        flash('Thank you for registering, please log in!')
+        return redirect('/')
         
     if valid ==True:
         pw_hash = bcrypt.generate_password_hash(request.form['password'])
@@ -258,20 +259,23 @@ def contact(id):
     print('got here')
     this_property = Property.query.get(id)
     # state = 'CA'
-    print(this_property.address)
+    print(this_property.owner_id)
     # geocode_result = gmaps.geocode(this_property.address, this_property.city, state)
     this_property_comments = Comment.query.filter_by(property_id='id').all()
     return render_template("contact.html", this_property = this_property , comments = this_property_comments )
 
 @app.route('/commentadd/<id>', methods=['POST'])
 def commentsadd(id):
+    # validation to make building owner or admin
+    
+
     this_property = Property.query.get(id)
-    print(this_property.id)
-    new_comment = Comment(comments = request.form['owner_comment'], property_id = this_property.id )
+    
+    admin_comment = Comment(comments = request.form['admin_comment'], property_id = 'id', admin = True )
+    new_comment = Comment(comments = request.form['owner_comment'], property_id = 'id', owner_id = session['id'] )
     db.session.add(new_comment)
     db.session.commit()
-    this_property_comments = Comment.query.filter_by(property_id='id').all()
-    return render_template('contact.html',comments = this_property_comments, this_property = this_property)
+    return redirect(f'/contact/{id}')
  
 @app.route('/logout')
 def logout():

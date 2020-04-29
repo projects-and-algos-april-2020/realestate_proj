@@ -62,7 +62,7 @@
                 </tbody>
             
               </table>
-              <div id="map"></div>
+        
 
               
         </div>
@@ -72,9 +72,10 @@
                 <button type="submit">Post!</button>
             </form>
             <div class="comments">
+           <!-- check for owner Id and admin id --> -->
                 {% for comment in comments %}
 
-                <p>{{comment.property_comments}},  {{comment.comments}}</p>
+                <p>{{comment.owner_comments.first_name}},  {{comment.comments}}</p>
                 
                 {% endfor %}
 
@@ -82,24 +83,17 @@
         </div>
        
             
-        <script>
+        
+      
+    
+          <div class="google_maps">
+            <iframe width="300" height="300" frameborder="0" style="border:0"
+            src="https://www.google.com/maps/embed/v1/search?q={{this_property.address}}+ +{{ this_property.city }}+ +{{ this_property.zip_code }},+USA&key={{'AIzaSyCflXWHpLx4rriSS-1KmHgabloxJYHRPqg'}}" allowfullscreen></iframe>
+          </div>
+    
           
-            // Initialize and add the map
-            function initMap() {
-              // The location of Uluru
-
-              var property = {lat: -25.344, lng: 131.036};
-              // The map, centered at Uluru
-              var map = new google.maps.Map(
-                  document.getElementById('map'), {zoom: 4, center: property});
-              // The marker, positioned at Uluru
-              var marker = new google.maps.Marker({position: property, map: map});
-            }
-                </script>
-                <script async defer
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCflXWHpLx4rriSS-1KmHgabloxJYHRPqg">
-                // https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=YOUR_API_KEY
-                </script> 
+    
+          
 
     </div>
 </body>
