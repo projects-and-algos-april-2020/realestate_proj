@@ -24,6 +24,8 @@
                     <a href="/about" >About </a>
                   </div>
             </div>
+
+            
        
         <div class="offer">
             <h3>Hello, {{session.first_name}}! Your offers are below:</h3>
@@ -61,39 +63,34 @@
                   </tr>
                 </tbody>
             
-              </table>
-        
-
-              
+              </table>        
         </div>
-        <div class="comment">
-            <form action="/commentadd/{{this_property.id}}" method="POST">
-                <input type="textbox" cols='50' rows = '5' name='owner_comment' placeholder="Contact us about your offers">
-                <button type="submit">Post!</button>
-            </form>
+        <div class="comment" style = 'overflow: scroll;'>
+          <h3>Start a dialog about your property below:</h3>
+
             <div class="comments">
-           <!-- check for owner Id and admin id --> -->
+           <!-- check for owner Id and admin id --> 
+
+           <!-- {% if comments.owner_id == this_property.owner_id  %} -->
+           <!-- {% endif %} -->
+            
                 {% for comment in comments %}
 
                 <p>{{comment.owner_comments.first_name}},  {{comment.comments}}</p>
-                
-                {% endfor %}
+              
+                {% endfor %}     
 
             </div>
+            <form action="/commentadd/{{this_property.id}}" method="POST">
+              <input type="textbox" cols='50' rows = '5' name='owner_comment' placeholder="Contact us">
+              <button type="submit">Post!</button>
+          </form>
         </div>
        
-            
-        
-      
-    
-          <div class="google_maps">
-            <iframe width="300" height="300" frameborder="0" style="border:0"
-            src="https://www.google.com/maps/embed/v1/search?q={{this_property.address}}+ +{{ this_property.city }}+ +{{ this_property.zip_code }},+USA&key={{'AIzaSyCflXWHpLx4rriSS-1KmHgabloxJYHRPqg'}}" allowfullscreen></iframe>
-          </div>
-    
-          
-    
-          
+        <div class="google_maps">
+          <iframe width="800" height="300"
+          src="https://www.google.com/maps/embed/v1/search?q={{this_property.address}}+ +{{ this_property.city }}+ +{{ this_property.zip_code }},+USA&key={{'AIzaSyCflXWHpLx4rriSS-1KmHgabloxJYHRPqg'}}" allowfullscreen></iframe>
+        </div>     
 
     </div>
 </body>

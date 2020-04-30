@@ -16,9 +16,16 @@ display: inline-block;
 .comment{
   display: inline-block;
   width: 40%;
+  height: 35%;
   margin-top: 10%;
   vertical-align: top;
   background-color: lightblue;
+  -ms-overflow-style: scrollbar;
+}
+.comments{
+  margin-left: 1%;
+  background-color: lightgray;
+  text-decoration: lightgreen;
 }
 .offer{
   width: 40%;
@@ -56,12 +63,19 @@ display: inline-block;
   margin: 2%;
 }
 
-
+.google_maps{
+  width: fit-content;
+  align-content: center;
+  margin-top: 2%;
+  background-color: gray;
+  margin-left: 10%;
+  
+}
 img{
 width: 130px;
 height: 120px;
 }
-.Middle_bottom{
+.Middle_bottom{s
 display: inline-block;
 vertical-align: top;
 

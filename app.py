@@ -20,13 +20,6 @@ pass_check = re.compile(r'^[a-zA-Z0-9.+_-]+$')
 gmaps = googlemaps.Client(key='AIzaSyCflXWHpLx4rriSS-1KmHgabloxJYHRPqg')
 
 
-# comments_table = db.Table('comments',
-#               db.Column('comment_id', db.Integer, db.ForeignKey('comments.id', ondelete='cascade'), primary_key=True),
-#               db.Column('user_id', db.Integer, db.ForeignKey('owners.id', ondelete='cascade'), primary_key=True), 
-#               db.Column('property_id', db.Integer, db.ForeignKey('properties.id', ondelete='cascade'), primary_key=True))
-
-
-
 
 class Owner(db.Model):
     __tablename__ = 'owners'
@@ -88,7 +81,8 @@ def signIncheck():
     print(type(this_owner.admin))
     if this_owner.admin == True:
         if bcrypt.check_password_hash(this_owner.password, request.form['password']):
-            session['id]'] = this_owner.id
+            session['id'] = this_owner.id
+            print(session['id'])
             session['first_name'] = this_owner.first_name
             return redirect ('/adminpage')
     if not this_owner.admin:
@@ -258,9 +252,9 @@ def offercalc():
 def contact(id):
     print('got here')
     this_property = Property.query.get(id)
-    # state = 'CA'
+    
     print(this_property.owner_id)
-    # geocode_result = gmaps.geocode(this_property.address, this_property.city, state)
+   
     this_property_comments = Comment.query.filter_by(property_id='id').all()
     return render_template("contact.html", this_property = this_property , comments = this_property_comments )
 
@@ -270,8 +264,11 @@ def commentsadd(id):
     
 
     this_property = Property.query.get(id)
+    # if this_property.owners_id.admin == True:
+    #     admin_comment = Comment(comments = request.form['admin_comment'], property_id = 'id', admin = True ) 
+        
+
     
-    admin_comment = Comment(comments = request.form['admin_comment'], property_id = 'id', admin = True )
     new_comment = Comment(comments = request.form['owner_comment'], property_id = 'id', owner_id = session['id'] )
     db.session.add(new_comment)
     db.session.commit()
