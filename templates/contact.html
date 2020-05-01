@@ -73,11 +73,13 @@
 
            <!-- {% if comments.owner_id == this_property.owner_id  %} -->
            <!-- {% endif %} -->
+
+         
             
                 {% for comment in comments %}
 
                 <p>{{comment.owner_comments.first_name}},  {{comment.comments}}</p>
-              
+                
                 {% endfor %}     
 
             </div>

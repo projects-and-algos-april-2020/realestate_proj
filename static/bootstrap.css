@@ -27,6 +27,28 @@ display: inline-block;
   background-color: lightgray;
   text-decoration: lightgreen;
 }
+.admin_two{
+  display: inline-block;
+  width: 40%;
+  height: 50%;
+  vertical-align: top;
+  margin-left: 5%;
+  margin-top: 10%;
+  background-color: lightgray;
+  padding: 1%;
+  border-radius: 1%;
+  -ms-overflow-style: scrollbar;
+}
+.admin{
+  display: inline-block;
+  width: 40%;
+  vertical-align: top;
+  margin-left: 5%;
+  margin-top: 10%;
+  background-color: lightgray;
+  padding: 1%;
+  border-radius: 1%;
+}
 .offer{
   width: 40%;
   display: inline-block;

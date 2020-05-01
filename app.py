@@ -98,9 +98,9 @@ def signIncheck():
 @app.route('/adminpage')
 def adminpage():
 
-    all_offers = Property.query.order_by(Property.address).all()
-
-    return render_template('adminpage.html',all_offers=all_offers)
+    all_offers = Property.query.order_by(Property.updated_at).all()
+    all_new_comments = Comment.query.order_by(Comment.updated_at.desc()).all()
+    return render_template('adminpage.html',all_offers=all_offers, new_comments = all_new_comments)
 
 @app.route('/addowner')
 def add_owner():
@@ -255,7 +255,7 @@ def contact(id):
     
     print(this_property.owner_id)
    
-    this_property_comments = Comment.query.filter_by(property_id='id').all()
+    this_property_comments = Comment.query.filter_by(property_id=int(id)).all()
     return render_template("contact.html", this_property = this_property , comments = this_property_comments )
 
 @app.route('/commentadd/<id>', methods=['POST'])
@@ -269,7 +269,7 @@ def commentsadd(id):
         
 
     
-    new_comment = Comment(comments = request.form['owner_comment'], property_id = 'id', owner_id = session['id'] )
+    new_comment = Comment(comments = request.form['owner_comment'], property_id = int(id), owner_id = session['id'] )
     db.session.add(new_comment)
     db.session.commit()
     return redirect(f'/contact/{id}')
