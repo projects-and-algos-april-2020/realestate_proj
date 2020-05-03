@@ -1,0 +1,11 @@
+Kyle Deleon helped me on this project. Kyle was instrumental in the integration of the Google Maps geocode API. Additionally, Kyle took the lead on the comments and admin sections of our application. This included the overall documentation and help with the database design. 
+
+Kyle and I decided to expand on my personal solo project. We implented these addtional feautures:
+    1. Google Geocode API - API key generated, map takes in users property information and displays information in google maps for a visual representation. 
+    
+    2. Admin page - Admin section was added to the database. Feautres include:
+        a. different login view to show all properties input into the database by users/owerns. 
+        b. Anytime a new comment is input intot the database the admin side sees it as it is sorted by the most recent date. 
+    3. Comments - If an owner is interested in the offer they were presented, we wanted to create a way for them to contact us and talk about their offer. Kyle and I created a way for the owners to click on their specific property and open up a dialog between an admin and themsevles. 
+
+    

@@ -18,10 +18,20 @@
             <div role="navigation" class="navbar navbar-dark bg-dark">
                     <h2 class="navbar-text">Apartment Buyers</h2>
                   <div class="nav-link">
+                   {% if session.first_name == 'Ty' %}
+                    <a href="/adminpage" >Adminpage |</a>
+                    <a href="/logout" >Logout |</a>
+                    <a href="/faq" >FAQ |</a>
+                    <a href="/about" >About </a>
+                    {% else %}
+
                     <a href="/offerpage">Offerpage |</a>
                     <a href="/logout" >Logout |</a>
                     <a href="/faq" >FAQ |</a>
                     <a href="/about" >About </a>
+                    {% endif %}
+                  
+                  
                   </div>
             </div>
 
@@ -43,7 +53,7 @@
                 <tbody>
                   <tr>
                     <td>Property Address: </td>
-                    <td>{{ this_property.address }}, {{this_property.city}} </td>
+                    <td>{{ this_property.address }}, {{this_property.city}}, CA </td>
                   </tr>
                   <tr>
                     <td>Units: </td>
@@ -78,21 +88,38 @@
             
                 {% for comment in comments %}
 
-                <p>{{comment.owner_comments.first_name}},  {{comment.comments}}</p>
-                
+                <table class="table table-striped table-dark">
+        
+  
+                  <tbody>
+                    <tr>
+                      <td>{{comment.owner_comments.first_name}}:</td>
+                      <td>{{comment.comments}} </td>
+                    </tr>
+                  
+                  </tbody>
+              
+                </table>   
+
                 {% endfor %}     
 
             </div>
             <form action="/commentadd/{{this_property.id}}" method="POST">
-              <input type="textbox" cols='50' rows = '5' name='owner_comment' placeholder="Contact us">
-              <button type="submit">Post!</button>
+              <label for="comment">Comment:</label>
+              <textarea class="form-control" rows="5" id="comment" name="owner_comment"></textarea>
+              
+              <button class='btn-block' type="submit">Post!</button>
           </form>
         </div>
        
         <div class="google_maps">
           <iframe width="800" height="300"
           src="https://www.google.com/maps/embed/v1/search?q={{this_property.address}}+ +{{ this_property.city }}+ +{{ this_property.zip_code }},+USA&key={{'AIzaSyCflXWHpLx4rriSS-1KmHgabloxJYHRPqg'}}" allowfullscreen></iframe>
+
         </div>     
+        <div class="blockquote-footer">
+          &copy; All rights reserved
+      </div>
 
     </div>
 </body>

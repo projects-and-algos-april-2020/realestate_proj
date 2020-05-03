@@ -16,16 +16,24 @@ display: inline-block;
 .comment{
   display: inline-block;
   width: 40%;
-  height: 35%;
+  height: 40%;
   margin-top: 10%;
   vertical-align: top;
   background-color: lightblue;
   -ms-overflow-style: scrollbar;
+  padding: 1%;
+  border-radius: 1%;
+}
+}
+.comment button{
+  display: block;
 }
 .comments{
   margin-left: 1%;
   background-color: lightgray;
   text-decoration: lightgreen;
+  padding: 1%;
+  border-radius: 1%;
 }
 .admin_two{
   display: inline-block;
@@ -82,15 +90,24 @@ display: inline-block;
   color: #fff;
   background-color: #007bff;
   border-color: #007bff;
-  margin: 2%;
+  margin-top: 2%;
+
+  width: 100%;
 }
 
+.btn-primary-reg {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+  margin-top: 2%;
+  width: 100%;
+}
 .google_maps{
   width: fit-content;
   align-content: center;
   margin-top: 2%;
   background-color: gray;
-  margin-left: 10%;
+  margin-left: 13%;
   
 }
 img{
@@ -589,8 +606,17 @@ font-size: 1.25rem;
 
 .blockquote-footer {
 display: block;
+width: 20%;
 font-size: 80%;
-color: #6c757d;
+color: black;
+font-size: 1.25rem;
+background-color: lightgray;
+border-radius: 2%;
+border-color: black;
+border-width: thick;
+margin-left: 40%;
+margin-bottom: 3%;
+text-align: center;
 }
 
 .blockquote-footer::before {
@@ -2111,9 +2137,9 @@ margin-left: 35%;
 margin-top: 20%;
 background-color: grey;
 border-radius: 2%;
-padding:1%
-;
+padding:1%;
 }
+
 
 .form-text {
 display: block;
@@ -3077,7 +3103,7 @@ margin-top: 0.5rem;
 input[type="submit"].btn-block,
 input[type="reset"].btn-block,
 input[type="button"].btn-block {
-width: 100%;
+width: 80%;
 }
 
 .fade {

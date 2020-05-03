@@ -252,10 +252,14 @@ def offercalc():
 def contact(id):
     print('got here')
     this_property = Property.query.get(id)
+
+    print( this_property.owners_property.admin)
     
     print(this_property.owner_id)
    
     this_property_comments = Comment.query.filter_by(property_id=int(id)).all()
+
+    
     return render_template("contact.html", this_property = this_property , comments = this_property_comments )
 
 @app.route('/commentadd/<id>', methods=['POST'])
